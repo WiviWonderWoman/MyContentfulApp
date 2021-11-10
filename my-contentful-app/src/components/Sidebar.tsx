@@ -24,7 +24,6 @@ const Sidebar = (props: SidebarProps) => {
     });
     return () => detach();
   }, [contentField]);
-  console.log("TEXT: ",bodyText);
   
   return <Paragraph>{bodyText}</Paragraph>;
 };

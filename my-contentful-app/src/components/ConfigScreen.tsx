@@ -59,8 +59,8 @@ const Config = (props: ConfigProps) => {
   return (
     <Workbench className={css({ margin: '80px' })}>
       <Form>
-        <Heading>My First Contentful App Config</Heading>
-        <Paragraph>Welcome to your contentful app.<br/><br/> This is Wivis config page.</Paragraph>
+        <Heading>Wivis First Contentful App Config</Heading>
+        <Paragraph>Welcome to my contentful app.<br/><br/> This is Wivis config page.</Paragraph>
       </Form>
     </Workbench>
   );

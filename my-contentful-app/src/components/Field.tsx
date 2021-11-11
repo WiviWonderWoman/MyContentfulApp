@@ -15,41 +15,34 @@ const Field = (props: FieldProps) => {
   const columnField = sdk.entry.fields[CONTENT_FIELD_ID.column];
   const rowField = sdk.entry.fields[CONTENT_FIELD_ID.row];
 
-  const [columnData, setColumnData] = useState(columnField.getValue());
-  const [rowData, setRowData] = useState(rowField.getValue());
-  // If you only want to extend Contentful's default editing experience
-  // reuse Contentful's editor components
-  // -> https://www.contentful.com/developers/docs/extensibility/field-editors/
-  
+  const [gridData, setGridData] = useState(
+    {
+      columns: columnField.getValue(),
+      rows: rowField.getValue()
+    });
+
   // Listen for onChange events and update the value
   useEffect(() => {
     const detach = columnField.onValueChanged((value) => {
-      const columnObj = { "columns": value};
-      JSON.stringify(columnObj);
-      // console.log(columnObj);
-      setColumnData(columnObj);
-      console.log(columnData);
+      setGridData({columns: value, rows: rowField.getValue()});
+      console.log('column: ', gridData);
     });
     return () => detach();
   }, [columnField]);
 
   useEffect(() => {
     const detach = rowField.onValueChanged((value) => {
-      const rowObj = { "rows": value};
-      JSON.stringify(rowObj);
-      // console.log(rowObj);
-      setRowData(rowObj);
-      console.log(rowData);
+      setGridData({columns: columnField.getValue(), rows: value});
+      console.log('row: ',gridData);
     });
     return () => detach();
   }, [rowField]);
-
   return (
   <>
     <Paragraph>JSON object in console @ Field.tsx:31 + 42</Paragraph>
-    <Grid columns={columnData} rows={rowData}>
-      <GridItem columnStart={columnData} columnEnd={columnData} rowStart={rowData} rowEnd={rowData}  style={{color: "white", backgroundColor: "green"}}>
-        X
+    <Grid columns={gridData.columns} rows={gridData.rows}>
+      <GridItem columnStart={gridData.columns} columnEnd={gridData.columns} rowStart={gridData.rows} rowEnd={gridData.rows}  style={{color: "white", backgroundColor: "green"}}>
+        <p>X </p>
       </GridItem>
     </Grid>
   </>

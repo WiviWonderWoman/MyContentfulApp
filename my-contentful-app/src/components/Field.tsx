@@ -26,7 +26,7 @@ const Field = (props: FieldProps) => {
     const detach = columnField.onValueChanged((value) => {
       const columnObj = { "columns": value};
       JSON.stringify(columnObj);
-      // console.log(columnObj);
+      console.log('BEFORE: ',columnObj);
       setColumnData(columnObj);
       console.log(columnData);
     });
@@ -37,7 +37,8 @@ const Field = (props: FieldProps) => {
     const detach = rowField.onValueChanged((value) => {
       const rowObj = { "rows": value};
       JSON.stringify(rowObj);
-      // console.log(rowObj);
+      console.log('BEFORE: ',rowObj);
+
       setRowData(rowObj);
       console.log(rowData);
     });

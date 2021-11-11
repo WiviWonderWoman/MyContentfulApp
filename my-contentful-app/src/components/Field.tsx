@@ -1,38 +1,57 @@
 import React, { useState, useEffect } from 'react';
 import { PlainClientAPI } from 'contentful-management';
-import { Paragraph } from '@contentful/forma-36-react-components';
+import { Paragraph, Grid, GridItem  } from '@contentful/forma-36-react-components';
 import { FieldExtensionSDK } from '@contentful/app-sdk';
 
 interface FieldProps {
   sdk: FieldExtensionSDK;
   cma: PlainClientAPI;
 }
-const CONTENT_FIELD_ID = 'helloWorld';
+const CONTENT_FIELD_ID = {column: 'columns', row: 'rows'};
 
 const Field = (props: FieldProps) => {
   const { sdk } = props;
 
-  const contentField = sdk.entry.fields[CONTENT_FIELD_ID];
+  const columnField = sdk.entry.fields[CONTENT_FIELD_ID.column];
+  const rowField = sdk.entry.fields[CONTENT_FIELD_ID.row];
 
-  const [inputData, setInputData] = useState(contentField.getValue());
+  const [columnData, setColumnData] = useState(columnField.getValue());
+  const [rowData, setRowData] = useState(rowField.getValue());
   // If you only want to extend Contentful's default editing experience
   // reuse Contentful's editor components
   // -> https://www.contentful.com/developers/docs/extensibility/field-editors/
   
   // Listen for onChange events and update the value
   useEffect(() => {
-    const detach = contentField.onValueChanged((value) => {
-      const obj = { "name": value};
-      JSON.stringify(obj);
-      console.log(obj);
-      setInputData(obj);
+    const detach = columnField.onValueChanged((value) => {
+      const columnObj = { "columns": value};
+      JSON.stringify(columnObj);
+      // console.log(columnObj);
+      setColumnData(columnObj);
+      console.log(columnData);
     });
     return () => detach();
-  }, [contentField]);
+  }, [columnField]);
+
+  useEffect(() => {
+    const detach = rowField.onValueChanged((value) => {
+      const rowObj = { "rows": value};
+      JSON.stringify(rowObj);
+      // console.log(rowObj);
+      setRowData(rowObj);
+      console.log(rowData);
+    });
+    return () => detach();
+  }, [rowField]);
 
   return (
   <>
-    <Paragraph>JSON object in console @ Field.tsx:27 </Paragraph>
+    <Paragraph>JSON object in console @ Field.tsx:31 + 42</Paragraph>
+    <Grid columns={columnData} rows={rowData}>
+      <GridItem columnStart={columnData} columnEnd={columnData} rowStart={rowData} rowEnd={rowData}  style={{color: "white", backgroundColor: "green"}}>
+        X
+      </GridItem>
+    </Grid>
   </>
   );
 };

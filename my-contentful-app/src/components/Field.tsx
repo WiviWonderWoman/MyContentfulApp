@@ -7,13 +7,14 @@ interface FieldProps {
   sdk: FieldExtensionSDK;
   cma: PlainClientAPI;
 }
-const CONTENT_FIELD_ID = {column: 'columns', row: 'rows'};
+const CONTENT_FIELD_ID = {column: 'columns', row: 'rows', data: 'data'};
 
 const Field = (props: FieldProps) => {
   const { sdk } = props;
 
   const columnField = sdk.entry.fields[CONTENT_FIELD_ID.column];
   const rowField = sdk.entry.fields[CONTENT_FIELD_ID.row];
+  const dataField = sdk.entry.fields[CONTENT_FIELD_ID.data];
 
   const [gridData, setGridData] = useState(
     {
@@ -23,27 +24,41 @@ const Field = (props: FieldProps) => {
 
   // Listen for onChange events and update the value
   useEffect(() => {
-    const detach = columnField.onValueChanged((value) => {
+    const detachCol = columnField.onValueChanged((value) => {
       setGridData({columns: value, rows: rowField.getValue()});
       console.log('column: ', gridData);
     });
-    return () => detach();
-  }, [columnField]);
-
-  useEffect(() => {
-    const detach = rowField.onValueChanged((value) => {
+    const detachRow = rowField.onValueChanged((value) => {
       setGridData({columns: columnField.getValue(), rows: value});
       console.log('row: ',gridData);
     });
-    return () => detach();
-  }, [rowField]);
+    return () => {
+      detachCol();
+      detachRow();
+    };
+  }, []);
+
+  const handleClick=(value: number) => {
+    dataField.setValue({value: value});
+  }
+  const gridItems= [];
+  let rowCount=0;
+  let columnCount=0;
+  const total= gridData.columns*gridData.rows;
+
+  for (let index = 0; index < total; index++) {
+    if (columnCount === gridData.columns) {
+      columnCount = 0;
+      rowCount++;
+    }
+    gridItems.push(<GridItem  key={index} columnStart={columnCount} columnEnd={columnCount+1} rowStart={rowCount} rowEnd={rowCount+1} style={{border: 'solid 1px black'}}><button onClick={() => handleClick(index)}>{index}</button></GridItem>);
+    columnCount++;
+  }
+
   return (
   <>
-    <Paragraph>JSON object in console @ Field.tsx:31 + 42</Paragraph>
-    <Grid columns={gridData.columns} rows={gridData.rows}>
-      <GridItem columnStart={gridData.columns} columnEnd={gridData.columns} rowStart={gridData.rows} rowEnd={gridData.rows}  style={{color: "white", backgroundColor: "green"}}>
-        <p>X </p>
-      </GridItem>
+    <Grid columns={gridData.columns} rows={gridData.rows} >
+      {gridItems}
     </Grid>
   </>
   );
